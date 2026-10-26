@@ -9,6 +9,7 @@ Everything players would notice, newest first.
 - Away heroes and their gear are locked until they're back. Recalling early brings them home with nothing.
 - More expedition slots and bigger teams come from the QoL banner.
 - New: More → About, with this changelog, credits, save backups and a bug report button.
+- Join the Discord from More → About to share feedback, bugs and lucky pulls.
 - The game now keeps 3 automatic save backups, and shows a recovery screen if something breaks.
 - Fixed: expedition timers could read an hour short. The ticket counter now shows hero and gear tickets separately. Summon tabs sit in two rows.
 

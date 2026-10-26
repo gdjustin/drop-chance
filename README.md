@@ -12,15 +12,22 @@ A free idle game about drop rates. **Everything is a drop:** your heroes, your g
 
 This is an early public build. Balance will change, and things will break.
 
-- **Found a bug?** In the game, go to More → About → Report a bug. It copies a report with your version and any errors. Paste it into a [new issue](https://github.com/gdjustin/drop-chance/issues/new/choose).
+- **Found a bug?** In the game, go to More → About → Report a bug. It copies a report with your version and any errors. Paste it into a [new issue](https://github.com/gdjustin/drop-chance/issues/new/choose) or the [Discord](https://discord.gg/VABkGWuMy).
 - **What changed:** see [CHANGELOG.md](CHANGELOG.md), or More → About in the game.
 
-## Credits
+## Community
+
+- **Discord:** https://discord.gg/VABkGWuMy (feedback, bugs and lucky pulls)
+- **Bugs and ideas:** [open an issue](https://github.com/gdjustin/drop-chance/issues/new/choose)
+
+## License and credits
+
+The game's code is © 2026 Justin Davis and open source under the [MIT License](LICENSE).
+
+Art, sound and fonts are **not** covered by the MIT License; they belong to their creators and are used under their own licenses. See [CREDITS.md](CREDITS.md):
 
 - Pixel art, sounds and font: [Ninja Adventure](https://pixel-boy.itch.io/ninja-adventure-asset-pack) by Pixel-boy and AAA (CC0)
 - Dungeon and camp tiles: [Tiny Dungeon](https://kenney.nl/assets/tiny-dungeon) and [Tiny Town](https://kenney.nl/assets/tiny-town) by Kenney (CC0)
 - Mobile-game icons: Free Icon Pack by gvesster
 
 A parody of gacha and trading-card games; not affiliated with any of them.
-
-© 2026 gdjustin. All rights reserved. See [LICENSE.md](LICENSE.md).
