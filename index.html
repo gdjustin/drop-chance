@@ -596,9 +596,26 @@ img.gild{filter:sepia(1) saturate(3.5) brightness(1.15)}
 .mech.wn{text-align:left;align-items:stretch}.mech.wn h2,.mech.wn .k,.mech.wn img{align-self:center}.mech.wn .chg{max-height:42vh;overflow:auto}
 .baks{display:flex;flex-direction:column;gap:6px;margin-top:6px}.bak{background:#f6f7fd;border-radius:12px;padding:8px 10px;gap:8px}
 a.btn{text-decoration:none}
+/* ---------- tutorial ---------- */
+#tut{position:fixed;inset:0;z-index:40;pointer-events:none}
+#tut[hidden]{display:none}
+#tut.dim{background:rgba(20,16,50,.45)}
+.tring{position:fixed;border:3px solid var(--pink);border-radius:16px;box-shadow:0 0 0 9999px rgba(20,16,50,.45);transition:all .2s ease;animation:tpulse 1.4s ease-in-out infinite}
+.tring[hidden]{display:none}
+@keyframes tpulse{50%{border-color:#fff}}
+.tarrow{position:fixed;transform:translateX(-50%);font-size:24px;line-height:1;color:var(--pink);text-shadow:0 2px 0 #fff,0 0 8px rgba(0,0,0,.3);animation:tbounce .8s ease-in-out infinite}
+.tarrow[hidden]{display:none}
+@keyframes tbounce{50%{margin-top:8px}}
+.tcard{position:fixed;pointer-events:auto;background:#fff;color:var(--ink);border-radius:18px;padding:14px 16px 12px;box-shadow:0 10px 30px rgba(0,0,0,.35);border:3px solid var(--pink)}
+.tstep{font:800 11px/1 var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--pink)}
+.ttxt{margin:8px 0 10px;font-size:15px;line-height:1.4;font-weight:700}
+.tbtns{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tbtns [hidden]{display:none}
+.nb.tutlock{opacity:.35;filter:grayscale(1)}
 </style>
+<script data-goatcounter="https://dropchance.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <script>
-const APPINFO={"ver": "0.8.0", "owner": "Justin Davis", "year": "2026", "discord": "https://discord.gg/VABkGWuMy", "repo": "https://github.com/gdjustin/drop-chance", "issues": "https://github.com/gdjustin/drop-chance/issues/new", "site": "https://gdjustin.github.io/drop-chance/", "license": "MIT", "channel": "public", "date": "2026-10-25"};const CHANGES=[{"v": "0.8.0", "d": "2026-10-25", "title": "First public playtest", "items": ["Welcome! This is the first public build. Saves stay on your device; back them up from Settings.", "Expeditions replace dungeons. In the Camp, send heroes who aren't fighting on 1, 4 or 8-hour trips. They come back with rolls on that expedition's table.", "Start with the Coin Run; chart more expedition types from the Adventure banner. Stronger teams unlock higher tiers.", "Away heroes and their gear are locked until they're back. Recalling early brings them home with nothing.", "More expedition slots and bigger teams come from the QoL banner.", "New: More → About, with this changelog, credits, save backups and a bug report button.", "Join the Discord from More → About to share feedback, bugs and lucky pulls.", "The game now keeps 3 automatic save backups, and shows a recovery screen if something breaks.", "Fixed: expedition timers could read an hour short. The ticket counter now shows hero and gear tickets separately. Summon tabs sit in two rows."]}, {"v": "0.7.1", "d": "pre-release", "title": "Polish pass", "items": ["One-tap Grind mode in the bag, and a button to pull gems off unequipped gear.", "Tap a hero's gear to open it; gems now show on equipped gear.", "New bag filters: in the party, equipped without a gem, unequipped with a gem.", "The world map folds into a drawer. The Meta banner is now the Prestige banner.", "More → Get stronger scans your account and lists the levers you haven't pulled.", "Fixed: stage bar overlap, toast jitter, slot polish showing the wrong percentage."]}, {"v": "0.7.0", "d": "pre-release", "title": "The world opens up", "items": ["A drawn world map with fog that lifts as you explore.", "The Wilds: four side regions opened with Region Keys, scouted with Scouts. They stay open through a Reroll.", "Odds Shards let you pin a row you want or strike one you don't on most tables.", "The Camp: six buildings, each upgrade rolling a perk.", "Forks in the road every 20 stages: treasure, elites, shrines, merchants and the rare mythic."]}, {"v": "0.6.0", "d": "pre-release", "title": "The Reroll", "items": ["Reroll the run for tokens; tokens pull the Prestige banner for perks that raise your ceilings. Momentum makes the next run start faster.", "Normal tier for conquered regions, and boss guardians rolled from a table (watch for Gilded ones).", "The Gem banner, gem polish, slot polish, ability levels and skill books.", "The Grinder replaces salvage: every item ground is a pull on the materials table.", "More → Tables: the Codex of every table in the game, with the rows you've hit."]}];
+const APPINFO={"ver": "0.1.0", "owner": "Justin Davis", "year": "2026", "discord": "https://discord.gg/VABkGWuMy", "repo": "https://github.com/gdjustin/drop-chance", "issues": "https://github.com/gdjustin/drop-chance/issues/new", "site": "https://gdjustin.github.io/drop-chance/", "license": "MIT", "goatcounter": "dropchance", "channel": "public", "date": "2026-10-25"};const CHANGES=[{"v": "0.1.0", "d": "2026-10-25", "title": "First playtest", "items": ["Welcome! This is the first public build. Saves stay on your device; back them up from Settings.", "Join the Discord to give feedback: https://discord.gg/VABkGWuMy", "In this build: 38 heroes, 13 gear slots, more than 10 adventure zones, stance and elemental weaknesses, abilities, a home camp, a prestige system, and a bit more."]}];
 /* =========================================================
    Boot guard: runs before the game script. Catches errors,
    shows a crash screen, and can restore a backup even if the
@@ -1078,14 +1095,14 @@ const TREAT=[['Normal',88],['Holo',9],['Reverse',2.5],['Foil',0.45],['Prismatic'
 /* ---------- features ---------- */
 // Build the Game: the game starts as nothing and is assembled pull by pull. Ends with the first zone and the first hero.
 const BUILD=[
-  ['save','Save Game','k/Scroll','Progress now saves on this device. A sensible first pull.',0],
-  ['coins','Coins','k/Money','A currency bar, and coins that trickle in while the game builds itself.',0],
-  ['menu','Menu','o/Book','A bottom menu, so there are places to go.',12],
+  ['save','Save Game','k/Scroll','Wouldn\'t get far without it.',0],
+  ['coins','Coins','k/Money','',0],
+  ['menu','Menu','o/Book','',12],
   ['heroBanner','Hero Summon','k/Necromancy','',30],
-  ['coinM','Coin Packs','k/Money','Clearing a stage banks a coin pack. Open them for coins.',50],
-  ['world','The World','s/Scroll','A map. Greenwood is the first region. Gate bosses unlock the next.',75],
-  ['zone','Mossy Path','w/Sword','The first adventure zone: 25 stages and a boss.',100],
-  ['hero','Pip','f/Boy','Your first hero, plus two free summons. The adventure starts now.',130],
+  ['coinM','Coin Packs','k/Money','Clearing a stage earns a coin pack. Open it for more coins.',50],
+  ['world','The World','s/Scroll','A map. Greenwood is the first region. Defeat bosses to discover more.',75],
+  ['zone','Mossy Path','w/Sword','A nice tutorial zone for our "heroes" to beat up on some wildlife.',100],
+  ['hero','Pip','f/Boy','He\'s not much, but you\'ll always remember your first.',130],
 ];
 // Game Features: fixed order, retires when it runs out.
 const CORE=[
@@ -1100,7 +1117,7 @@ const CORE=[
   ['gems','Gem Sockets','r/GemRed','Socket gems into gear. Fuse three into one of the next grade.'],
   ['rareM','Rare Packs','o/Dice20','Bosses bank rare packs. Tickets, sigils, high chests.'],
 ];
-const CORE_COST=[30,60,100,150,220,300,400,520,650,800];
+const CORE_COST=[0,60,100,150,220,300,400,520,650,800];
 // Storage: its own endless banner.
 const STORAGE={s10:{n:'Storage +10',t:0,w:30,ico:'o/Bag',add:10},s20:{n:'Storage +20',t:1,w:12,ico:'o/Bag',add:20},s30:{n:'Storage +30',t:2,w:4,ico:'o/Bag',add:30},s50:{n:'Storage +50',t:3,w:1,ico:'o/Bag',add:50}};
 // Quality-of-life banner: random and finite. Appears once Game Features retires and leaves when every item is maxed.
@@ -1178,7 +1195,7 @@ const GPOLISH_MAX=5, GPOLISH_STEP=.06, GPOLISH_P=[90,75,60,45,30], GPOLISH_FAIL=
 const gpolishCost=s=>20*Math.pow(2,s);
 const GEM_COST=150;
 // Fine print, read by nobody.
-const FINE=['Drop rates are rounded to the nearest pretending. Past pulls do not predict future pulls, except when they do (see Pity).','No real money is accepted, requested, or understood by this game.','Rate-ups are permanent. The word "limited" is used for emphasis only.','Each row is weighted honestly. The 0.001% row exists. Probably.'];
+const FINE=['No real money is accepted, requested, or understood by this game.','Each row is weighted honestly. The 0.001% row exists. Probably.'];
 
 /* =========================================================
    v0.7 — the world, the Wilds, Odds Shards, the camp
@@ -2338,7 +2355,7 @@ function guardPanel(Z){const S=G.S;const gd=G.guardOf(Z.id);const rolled=S.zones
   const tbl=G.guardTable(Z.id);const tot=tbl.reduce((a,x)=>a+x[1],0);const seen=S.codex['guard:'+Z.id]||{};
   return `<div class="guard"><div class="spread"><b class="small">Who guards ${Z.gate?'the gate':'this zone'}?</b><span class="tiny muted">${rolled?'Rolled':'Rolls when you reach the boss'} · next lap rolls again</span></div>
     <div class="rowchips">${tbl.map(([b,w,g])=>{const on=gd.b===b&&!!gd.g===!!g&&rolled;return `<span class="rowchip${g?' rare gilded':''}${on?' on':''}${seen[b+':'+g]?'':' unseen'}"><img class="px ic s" src="${bossImg(BOSS[b])}" alt="">${g?'Gilded ':''}${esc(BOSS[b].n)}${odds?` <b>${pct(w/tot*100)}</b>`:''}</span>`}).join('')}</div>
-    ${S.rerolls?`<div class="row" style="margin-top:6px"><button class="btn xs pink" data-act="bossReroll" data-arg="${Z.id}">${ico('i/Dice','s')} Reroll the guardian · ${S.rerolls} left</button><span class="tiny muted">A load-bearing roll: a better matchup is a pull away.</span></div>`:''}</div>`}
+    ${S.rerolls?`<div class="row" style="margin-top:6px"><button class="btn xs pink" data-act="bossReroll" data-arg="${Z.id}">${ico('i/Dice','s')} Reroll the guardian · ${S.rerolls} left</button><span class="tiny muted">A better matchup is a pull away.</span></div>`:''}</div>`}
 function bossLootPanel(Z){const tid=Z.tier?'bossN':'boss';const dice=G.perk('dice');return `<details class="lootd"><summary class="small">Boss loot table${Z.tier?' · Normal':''}</summary>${rowChips(tid,TABLES[tid].rows,r=>r[4]?1+.05*dice:1)}</details>`}
 let LEVC={t:0,z:null,v:null};
 function stallPanel(){const S=G.S,run=S.run;if(!S.stall||!run||run.zone!==S.stall.zone||UI.hideStall===S.stall.zone)return '';
@@ -2374,22 +2391,22 @@ function bagMats(){const S=G.S;let h=`<div class="panel"><h3>Materials</h3><div 
     <div class="mat"><img class="px" src="${A('i/Diamond')}" alt=""><div><b>${S.tickets.gem||0}</b> Gem pulls<div class="tiny muted">Spend them on the Gem banner in Summon.</div></div></div>
     <div class="mat"><img class="px" src="${A('i/Key')}" alt=""><div><b>${S.keys.r} · ${S.keys.c}</b> Region and common keys<div class="tiny muted">Open Wilds regions and their side paths from the world map.</div></div></div></div></div>`;
   h+=`<div class="panel"><div class="spread"><h3 style="margin:0">${ico('i/Hammer')} Slot polish</h3><span class="small">${fmt(S.essence)} essence</span></div><p class="note" style="margin:4px 0 8px">Polish belongs to the slot, not the item, and works for every hero: each level adds ${+(POLISH_STEP*100).toFixed(1)}% to whatever is equipped there. Swap gear freely; the polish stays.</p>
-    <div class="polgrid">${POS.map(([p,type,pn])=>{const l=S.polish[p]||0;const open=G.posOpen(p);const c=polishCost(l);return `<div class="pol${open?'':' off'}"><img class="px" src="${A(GTYPE[type].bases[0][1])}" alt=""><div><b class="small">${pn}</b><div class="tiny muted">Lv ${l}/${POLISH_MAX} · +${+(l*POLISH_STEP*100).toFixed(1)}%</div></div>${open&&l<POLISH_MAX?`<button class="btn xs" data-act="polishSlot" data-arg="${p}" ${S.essence>=c?'':'disabled'}>+1 <span class="cost">${ico('i/Potion')}${fmt(c)}</span></button>`:open?'<span class="tiny">Max</span>':'<span class="tiny muted">Locked</span>'}</div>`}).join('')}</div></div>`;
-  h+=`<div class="panel"><h3>${ico('i/Wheel')} The Grinder</h3><p class="note">Every item you grind, by hand or by a sweep, is a pull on this table. Rarer items roll the rare rows more often. The protection rule still decides what sweeps may take.</p>${rowChips('grinder',TABLES.grinder.rows)}${fine(4)}</div>`;
+    <div class="polgrid">${POS.map(([p,type,pn])=>{const l=S.polish[p]||0;const open=G.posOpen(p);const c=polishCost(l);if(!open)return `<div class="pol off"><img class="px" src="${A('i/Lock')}" alt=""><div><b class="small">???</b><div class="tiny muted">Slot not unlocked yet</div></div><span class="tiny muted">Locked</span></div>`;return `<div class="pol"><img class="px" src="${A(GTYPE[type].bases[0][1])}" alt=""><div><b class="small">${pn}</b><div class="tiny muted">Lv ${l}/${POLISH_MAX} · +${+(l*POLISH_STEP*100).toFixed(1)}%</div></div>${open&&l<POLISH_MAX?`<button class="btn xs" data-act="polishSlot" data-arg="${p}" ${S.essence>=c?'':'disabled'}>+1 <span class="cost">${ico('i/Potion')}${fmt(c)}</span></button>`:open?'<span class="tiny">Max</span>':'<span class="tiny muted">Locked</span>'}</div>`}).join('')}</div></div>`;
+  h+=`<div class="panel"><h3>${ico('i/Wheel')} The Grinder</h3><p class="note">Every item you grind, by hand or by a sweep, is a pull on this table. Rarer items roll the rare rows more often.</p>${rowChips('grinder',TABLES.grinder.rows)}${fine(4)}</div>`;
   return h}
 function gemPolishPanel(){const S=G.S;return `<div class="panel"><div class="spread"><h3 style="margin:0">Gem polish</h3><span class="small">${fmt(S.gdust)} gem dust</span></div><p class="note" style="margin:4px 0 8px">Polish a gem type and every gem of that type gets +${Math.round(GPOLISH_STEP*100)}% per step. Each step is a roll; every failure adds +${GPOLISH_FAIL}% to the next try.</p>
   <div class="polgrid">${GEMK.map(k=>{const st=S.gpolish[k]||0;const c=gpolishCost(st);return `<div class="pol"><img class="px" src="${A(GEMS[k].ico)}" alt=""><div><b class="small">${GEMS[k].n}</b><div class="tiny muted">Step ${st}/${GPOLISH_MAX} · +${Math.round(st*GPOLISH_STEP*100)}%${S.gfail[k]?` · ${S.gfail[k]} fail${S.gfail[k]>1?'s':''} stacked`:''}</div></div>${st<GPOLISH_MAX?`<button class="btn xs" data-act="polishGem" data-arg="${k}" ${S.gdust>=c?'':'disabled'}>${G.gemChance(k)}% <span class="cost">${ico('i/Dust')}${fmt(c)}</span></button>`:'<span class="tiny">Flawless</span>'}</div>`}).join('')}</div></div>`}
 
 /* ---------- more: the Table Codex and credits ---------- */
 function moreTables(){const S=G.S;const odds=G.has('odds');
-  let h=oddsHeader()+`<div class="panel"><h3>${ico('i/Magnifier')} Table Codex</h3><p class="note">Every drop table in the game. Rows you have never hit show as ???. <b>Load-bearing</b> rolls change what you can do; <b>flavor</b> rolls land on the same curve as a flat grant, so they're here for the ceremony.</p></div>`;
+  let h=oddsHeader()+`<div class="panel"><h3>${ico('i/Magnifier')} Table Codex</h3><p class="note">Every drop table in the game. Rows you have never hit show as ???.</p></div>`;
   const tables=Object.entries(TABLES).filter(([k,t])=>t.rows);
   const metaRows=Object.entries(META).map(([k,p])=>[k,p.w,p.n,p.ico,p.t>=4]);tables.push(['meta',Object.assign({},TABLES.meta,{rows:metaRows})]);
   if(G.campOpen())for(const b of CAMP_ORDER)tables.push(['camp:'+b,{n:CAMP[b].n+' upgrades',kind:'load',src:'Camp upgrades',rows:CAMP[b].rows}]);
   for(const [tid,t] of tables){const seen=S.codex[tid]||{};const got=t.rows.filter(r=>seen[r[0]]).length;const ods=tableOdds(t.rows);
-    h+=`<div class="panel tight"><div class="spread"><b>${esc(t.n)}</b><span class="row"><span class="chip ${t.kind==='load'?'ok':''}">${t.kind==='load'?'Load-bearing':'Flavor'}</span><span class="tiny muted">${got}/${t.rows.length}</span></span></div><div class="tiny muted">${esc(t.src)}</div>
+    h+=`<div class="panel tight"><div class="spread"><b>${esc(t.n)}</b><span class="row"><span class="tiny muted">${got}/${t.rows.length}</span></span></div><div class="tiny muted">${esc(t.src)}</div>
       <div class="codex">${tableOdds(t.rows,r=>{const o=S.odds[tid];return o?(o.s&&o.s[r[0]]?0:1+((o.p&&o.p[r[0]])||0)):1}).map(({r,p})=>{const s=seen[r[0]];return `<div class="crow${s?'':' unseen'}${r[4]?' rare':''}">${s?ico(r[3],'s'):'<span class="q">?</span>'}<span>${s?esc(r[2]):'???'}</span><span class="tiny muted">${odds||s?pct(p):''}</span><span class="tiny">${s?'×'+fmt(s):''}</span>${oddsButtons(tid,r,t.rows)}</div>`}).join('')}</div></div>`}
-  const met=Object.keys(S.meta.met||{});if(met.length){h+=`<div class="panel tight"><div class="spread"><b>Guardian tables</b><span class="chip ok">Load-bearing</span></div><div class="tiny muted">One per zone. A zone's boss is rolled each lap; the first meeting is always its usual guardian.</div>`;
+  const met=Object.keys(S.meta.met||{});if(met.length){h+=`<div class="panel tight"><div class="spread"><b>Guardian tables</b></div><div class="tiny muted">One per zone. A zone's boss is rolled each lap; the first meeting is always its usual guardian.</div>`;
     for(const z of met){const tid='guard:'+z;const rows=G.guardTable(z).map(x=>[x[0]+':'+x[2],x[1],(x[2]?'Gilded ':'')+BOSS[x[0]].n,null,!!x[2]]);const seen=S.codex[tid]||{};const o=S.odds[tid];
       h+=`<div class="small" style="margin-top:6px"><b>${esc(ZONE[z].n)}</b> <span class="tiny muted">${esc(zoneLabel(z))}</span></div><div class="codex">${tableOdds(rows,r=>o?(o.s&&o.s[r[0]]?0:1+((o.p&&o.p[r[0]])||0)):1).map(({r,p})=>{const s=seen[r[0]];const b=r[0].split(':')[0];return `<div class="crow${s?'':' unseen'}${r[4]?' rare':''}">${s?`<img class="px ic s" src="${bossImg(BOSS[b])}" alt="">`:'<span class="q">?</span>'}<span>${s?esc(r[2]):'???'}</span><span class="tiny muted">${odds||s?pct(p):''}</span><span class="tiny">${s?'×'+s:''}</span>${oddsButtons(tid,r,rows)}</div>`}).join('')}</div>`}h+=`</div>`}
   return h}
@@ -2600,6 +2617,7 @@ let navSig='';
 function updateNav(){const items=navItems();const sig=items.map(x=>x[0]).join()+UI.screen;const nav=$('nav');
   nav.hidden=!G.has('menu');
   if(sig!==navSig){navSig=sig;nav.innerHTML=`<div class="in">${items.map(([k,n,ic])=>`<button class="nb${k==='summon'?' summon':''}" data-act="go" data-arg="${k}" aria-current="${UI.screen===k}">${k==='summon'?`<span class="e"><img class="px" src="${A(ic)}" alt=""></span>`:`<img class="px" src="${A(ic)}" alt="">`}<span>${n}</span><span class="dot" data-b="${k}" hidden></span></button>`).join('')}</div>`}
+  const sb=nav.querySelector('[data-arg="summon"]');if(sb)sb.classList.toggle('tutlock',tutSummonLocked());
   for(const [k] of items){const d=nav.querySelector(`[data-b="${k}"]`);if(!d)continue;const b=navBadge(k);d.hidden=b===null;if(b!==null&&d.textContent!==b)d.textContent=b}}
 
 /* ---------------- render dispatch ---------------- */
@@ -2628,7 +2646,7 @@ function renderAdventure(){const S=G.S,run=S.run;const zt=zoneTitle(run);const Z
   if(S.regionTickets)h+=`<div class="panel tight spread" style="background:#fff3d6"><div class="row"><img class="px ic l" src="${A('s/ScrollFire')}" alt=""><div><b>Region Ticket</b><div class="small muted">The gate boss dropped it. Chart the next region.</div></div></div><button class="btn sm pink" data-act="regionTicket">Chart it</button></div>`;
   h+=mapPanel();
   if(G.has('training'))h+=trainPanel();
-  h+=`<div class="panel"><h3>Log</h3><div class="log" id="log">${UI.logs.length?UI.logs.slice(0,20).map(x=>`<div class="t${x.t}"><b>${TIERS[x.t]}</b> ${esc(x.txt)}</div>`).join(''):'<div class="muted small">Every stage you clear banks reward packs. Nothing drops directly: open them on the Rewards screen.</div>'}</div></div>`;
+  h+=`<div class="panel"><h3>Log</h3><div class="log" id="log">${UI.logs.length?UI.logs.slice(0,20).map(x=>`<div class="t${x.t}"><b>${TIERS[x.t]}</b> ${esc(x.txt)}</div>`).join(''):''}</div></div>`;
   return h}
 function spinChips(){const S=G.S;const m=[['coin',COIN,'Coin'],['xp','k/Upgrade','XP'],['loot','o/MoneyBag','Loot'],['rare','o/Dice20','Rare']];
   return m.map(([k,ic,n])=>`<button class="spinchip${G.machineOpen(k)?'':' locked'}" data-act="goMachine" data-arg="${k}" id="sc-${k}" title="${n} packs banked">${ico(ic)}<span class="nm">${n}</span><span class="ct" id="scn-${k}">${fmt(G.spinsFor(k))}</span></button>`).join('')}
@@ -2768,7 +2786,8 @@ function renderMachines(){const S=G.S;const k=UI.machine;const mach=MACH;
   h+=`<div class="packart"><div class="pk"><img class="px" src="${A(m.ic)}" alt=""></div><div class="pkn" id="pkn">${fmt(n)}</div></div>
     <div class="ctrls"><button class="btn" data-act="open" data-arg="1" data-need="1" ${n?'':'disabled'}>Open 1</button><button class="btn blue" data-act="open" data-arg="10" data-need="1" ${n?'':'disabled'}>Open 10</button>${G.has('batch')?`<button class="btn pink" data-act="open" data-arg="all" data-need="1" ${n||(k==='xp'&&G.spinsFor('xp'))?'':'disabled'}>Open all${k==='xp'?' heroes':''}</button>`:''}
     ${G.has('autospin')?`<button class="btn ${S.auto.spin?'green':'ghost'}" data-act="toggleAuto" data-arg="spin">Auto ${S.auto.spin?'on':'off'}</button>`:''}</div>
-    ${k==='coin'||k==='xp'?(G.has('odds')?`<div class="paytable">${REEL.map(r=>`<span>×${r.m} ${(r.p*100).toFixed(1)}%</span>`).join('')}</div><p class="tiny" style="opacity:.8;text-align:center;margin:0">A flavor roll: the average is exactly the flat reward.</p>`:''):rowChips(k,TABLES[k].rows)}
+    ${k==='coin'||k==='xp'?(G.has('odds')?`<div class="paytable">${REEL.map(r=>`<span>×${r.m} ${(r.p*100).toFixed(1)}%</span>`).join('')}</div><p class="tiny" style="opacity:.8;text-align:center;margin:0">On average, a pack pays exactly its flat reward.</p>`:''):rowChips(k,TABLES[k].rows)}
+    ${(k==='coin'||k==='xp')&&!G.has('autospin')?`<p class="small" style="text-align:center;margin:8px 0 0;opacity:.95">Don't worry, you'll unlock the ability to auto-open these soon.</p>`:''}
   </div>`;
   return h}
 function updateRewards(){const S=G.S;for(const k of Object.keys(MACH)){const e=$('tc-'+k);if(e){const v=fmt(machCount(k));if(e.textContent!==v)e.textContent=v}}
@@ -2832,7 +2851,7 @@ function heroSheet(id){const S=G.S,H=HERO[id],h=S.heroes[id];const st=G.heroStat
   <div><div class="spread"><h4 style="margin:0">Abilities</h4>${S.books?`<span class="tiny">${ico('i/Book','s')}${S.books} skill books</span>`:''}</div><div style="display:flex;flex-direction:column;gap:6px">${H.ab.map((a,i)=>abilityRow(a,i,h,id)).join('')}</div></div>`;
   if(G.has('bag')){const unlockAt=p=>{for(const z in SLOT_UNLOCK)if(SLOT_UNLOCK[z].includes(p))return z;return ''};
     x+=`<div><div class="spread"><h4 style="margin:0">Gear</h4><div class="row"><button class="btn xs ghost" data-act="unequipAll" data-arg="${id}" ${S.gear.some(g=>g.eq===id)&&!G.onExp(id)?'':'disabled'}>Unequip all</button><button class="btn xs blue" data-act="autoEquipOne" data-arg="${id}" ${G.onExp(id)?'disabled':''}>Auto-equip</button></div></div><div class="gslots" style="margin-top:8px">${POS.map(([p,type,pn])=>{
-      if(!G.posOpen(p))return `<div class="gslot locked"><img class="px" src="${A(GTYPE[type].bases[0][1])}" alt="" style="opacity:.2"><span class="gn muted">${pn}</span><span class="tiny muted">Clear ${unlockAt(p)}</span></div>`;
+      if(!G.posOpen(p))return `<div class="gslot locked"><img class="px" src="${A('i/Lock')}" alt="" style="opacity:.35"><span class="gn muted">???</span><span class="tiny muted">${unlockAt(p)?'Clear '+unlockAt(p):'Locked'}</span></div>`;
       const g=S.gear.find(q=>q.eq===id&&q.pos===p);const sel=UI.pick&&UI.pick.id===id&&UI.pick.pos===p;
       return g?`<button class="gslot t${g.t}${sel?' sel':''}" data-act="heroItem" data-arg="${g.uid}|${id}|${p}"><img class="px" src="${A(g.ico)}" alt="">${g.gem?`<img class="px gemdot" src="${A(GEMS[g.gem.k].ico)}" alt="${GEMS[g.gem.k].n} ${g.gem.g}" title="${GEMS[g.gem.k].n} ${g.gem.g}">`:''}<span class="gn">${esc(g.n)}</span><span class="tiny muted">${pn} · +${g.lv}${S.polish[p]?` · pol ${S.polish[p]}`:''}</span></button>`:`<button class="gslot${sel?' sel':''}" data-act="pickGear" data-arg="${id}|${p}"><img class="px" src="${A(GTYPE[type].bases[0][1])}" alt="" style="opacity:.3"><span class="gn muted">${pn}</span><span class="tiny muted">Empty${S.polish[p]?` · pol ${S.polish[p]}`:''}</span></button>`}).join('')}</div>`;
     if(UI.pick&&UI.pick.id===id){const p=UI.pick.pos,type=POSTYPE[p];const cur=S.gear.find(g=>g.eq===id&&g.pos===p);
@@ -2869,8 +2888,8 @@ function bagTiles(list){if(!list.length)return `<p class="note" style="grid-colu
     ${g.eq?`<span class="eqdot"><img class="px" src="${heroFace(g.eq)}" alt=""></span>`:''}<img class="px prot" src="${A(sw?'k/Repair':'k/Guard')}" alt="${sw?'Outclassed':'Protected'}" title="${sw?'Outclassed: sweeps may take it':'Protected'}">${g.lock?'<span class="lockdot">🔒</span>':''}</button>`}).join('')}
 function bagGear(){const S=G.S;const list=bagList();
   const sweepN=S.gear.filter(g=>G.sweepable(g)).length;const types=G.openTypes();
-  return `<div class="panel"><div class="row">${G.has('autoequip')?`<button class="btn sm blue" data-act="autoEquip">Auto-equip parties</button>`:''}<button class="btn sm" data-act="sweep" ${sweepN?'':'disabled'}>${ico('i/Wheel','s')} Grind outclassed (${sweepN})</button><button class="btn sm ${UI.grindMode?'red':'ghost'}" data-act="grindMode" aria-pressed="${!!UI.grindMode}">${ico('i/Wheel','s')} Grind mode: ${UI.grindMode?'on':'off'}</button>${G.has('gems')?`<button class="btn sm ghost" data-act="ungemFree" ${S.gear.some(g=>!g.eq&&g.gem)?'':'disabled'}>Remove gems from unequipped</button>`:''}${G.has('autofeed')?`<button class="btn sm green" data-act="autoFeed" ${sweepN?'':'disabled'}>Auto-feed</button>`:''}</div>
-  <div class="protect safe" style="margin-top:10px"><img class="px" src="${A('k/Guard')}" alt=""><div class="small"><b>Protection rule.</b> Sweeps, auto-feed and the auto-Grinder only take an item when enough other items of its type beat it at every stat and its ability: one for every slot of that type your parties could wear at once. Equipped and locked items are always safe.</div></div>
+  return `<div class="panel"><div class="row">${G.has('autoequip')?`<button class="btn sm blue" data-act="autoEquip">Auto-equip parties</button>`:''}<button class="btn sm" data-act="sweep" ${sweepN?'':'disabled'}>${ico('i/Wheel','s')} Grind outclassed (${sweepN})</button><button class="btn sm ${UI.grindMode?'red':'ghost'}" data-act="grindMode" aria-pressed="${!!UI.grindMode}" title="Toggle this on to grind up old gear into materials with a single click. Be careful!">${ico('i/Wheel','s')} Grind mode: ${UI.grindMode?'on':'off'}</button>${G.has('gems')?`<button class="btn sm ghost" data-act="ungemFree" ${S.gear.some(g=>!g.eq&&g.gem)?'':'disabled'}>Remove gems from unequipped</button>`:''}${G.has('autofeed')?`<button class="btn sm green" data-act="autoFeed" ${sweepN?'':'disabled'}>Auto-feed</button>`:''}</div>
+  <div class="protect safe" style="margin-top:10px"><img class="px" src="${A('k/Guard')}" alt=""><div class="small"><b>Gear Protection.</b> Gear auto-upgrades, auto-feeding and the auto-Grinder only take an item when several other items of its type beat it at all of its stats and abilities. Equipped and locked items are always safe.</div></div>
   <div class="filters">
     <input type="search" id="bagq" placeholder="Search: crit, slayer, Pip, boots…" value="${esc(UI.qbag)}" aria-label="Search gear">
     <div class="row"><label class="small muted" for="bagsort">Sort</label><select id="bagsort" data-change="bagSort">${[['rarity','Rarity'],['power','Power'],['ilvl','Item level'],['level','Level'],['type','Slot'],['newest','Newest']].map(([v,n])=>`<option value="${v}" ${UI.bagSort===v?'selected':''}>${n}</option>`).join('')}</select>
@@ -2945,7 +2964,7 @@ function renderSheet(){const el=$('sheet');const s=UI.sheet;if(!s){el.hidden=tru
 function closeSheet(){UI.sheet=null;UI.pick=null;renderSheet();dirty();nextQueued()}
 
 /* ================= INPUT ================= */
-function act(a,arg,ev){const S=G.S;
+function act(a,arg,ev){const S=G.S;if(!tutAct(a,arg))return;
   switch(a){
   case 'go':UI.screen=arg;UI.sheet=null;renderSheet();window.scrollTo(0,0);render();break;
   case 'closeOv':closeOverlay();break;
@@ -3096,7 +3115,7 @@ async function boot(){$('screen').innerHTML='<div class="loading">Loading sprite
   await loadImages();G.on(onEvent);
   if(!load()){G.fresh();logLine(0,'Pip sets off down the Mossy Path. Clear stages to bank reward spins.')}
   $('topbar').hidden=false;render();setInterval(loop,100);requestAnimationFrame(frame);
-  window.__ed={G,UI,act,render};releaseBoot();
+  window.__ed={G,UI,act,render};releaseBoot();tutBoot();
 }
 boot();
 
@@ -3221,7 +3240,7 @@ Object.assign(INTRO,{
   camp:{n:'The Camp',ico:'i/Scroll',txt:'You found a Blueprint. Spend Blueprints and coins to build and upgrade six camp buildings. Every upgrade rolls a small permanent perk from that building\'s table, and the camp survives every Reroll.'},
   wilds:{n:'The Wilds',ico:'i/Key',txt:'Past the Frontier lie the Wilds: regions you open with Region Keys from the Adventure banner. Their bosses drop Blueprints and Odds Shards. Some are far beyond you for now. That\'s the point.'},
   odds:{n:'Odds Shards',ico:'i/Dust',txt:'Odds Shards bend drop tables. In More → Tables, pin a row you\'ve seen to make it more likely, or strike a junk row so it never rolls again. Permanent, and it follows you through every Reroll.'},
-  forks:{n:'Forks in the road',ico:'s/Scroll',txt:'Every 20th stage the road forks, and the side stop is rolled: a treasure room, an elite ambush, a shrine, a wandering merchant, or something rarer.'},
+  forks:{n:'Forks in the road',ico:'s/Scroll',txt:'Every 20th stage the encounter table is rolled: a treasure room, an elite ambush, a shrine, a wandering merchant, or something rarer could await you…'},
 });
 function checkIntros7(){const S=G.S;if(!G.has('hero')||UI.catching)return;S.intros=S.intros||{};
   if(G.campOpen()&&!S.intros.camp)queue(()=>showIntro('camp'));
@@ -3331,7 +3350,8 @@ function restoreBackup(i){const b=backupList()[i];if(!b)return;backupNow('Before
 function agoTxt(t){const m=Math.round((Date.now()-t)/60000);return m<1?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' days ago'}
 
 /* ---------- About tab ---------- */
-function changeList(c){return `<ul class="chg">${c.items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`}
+const linkify=t=>esc(t).replace(/https?:\/\/[^\s<]+/g,u=>`<a href="${u}" target="_blank" rel="noopener">${u.replace(/^https?:\/\//,'')}</a>`);
+function changeList(c){return `<ul class="chg">${c.items.map(x=>`<li>${linkify(x)}</li>`).join('')}</ul>`}
 function moreAbout(){const S=G.S;const bl=backupList();const latest=CHANGES[0];
   let h=`<div class="panel about"><div class="row"><img class="px ic xl" src="${A('i/Lucky Block')}" alt=""><div><h3 style="margin:0">0.001% Drop Chance</h3><div class="small muted">Version ${esc(APPINFO.ver)}${APPINFO.channel==='playtest'?' · <b class="ptag">Playtest build</b>':''} · ${esc(APPINFO.date)}</div></div></div>
     <p class="small" style="margin:10px 0 0">A free idle game about drop rates. Everything is a drop: your heroes, your gear, your features, even the save button. The odds shown are the real odds.</p>
@@ -3343,9 +3363,9 @@ function moreAbout(){const S=G.S;const bl=backupList();const latest=CHANGES[0];
   h+=`<div class="panel"><h3>Save backups</h3><p class="note">The game keeps your last ${BAK_MAX} backups on this device: one every 30 minutes of play, and one before each Reroll or loaded save. Restoring replaces your current game (which is backed up first).</p>
     ${bl.length?`<div class="baks">${bl.map((b,i)=>`<div class="bak spread"><div><b>${esc(b.label)}</b> <span class="tiny muted">${agoTxt(b.at)} · v${esc(b.ver||'?')}</span><div class="tiny muted">${esc(b.sum||'')}</div></div><button class="btn xs ${UI.bakSure===i?'red':'ghost'}" data-act="aboutAct" data-arg="restore:${i}">${UI.bakSure===i?'Tap again to restore':'Restore'}</button></div>`).join('')}</div>`:`<p class="small muted">${G.has('save')?'No backups yet.':'Backups start once you have saving.'}</p>`}
     ${G.has('save')?`<div class="row" style="margin-top:8px"><button class="btn sm ghost" data-act="aboutAct" data-arg="backup">Back up now</button></div>`:''}</div>`;
-  h+=`<div class="panel"><h3>Changelog</h3>${CHANGES.map((c,i)=>i===0?`<h4 style="margin:6px 0 2px">v${esc(c.v)} · ${esc(c.title)}</h4><div class="tiny muted">${esc(c.d)}</div>${changeList(c)}`:`<details class="chgold"><summary><b>v${esc(c.v)}</b> · ${esc(c.title)} <span class="tiny muted">${esc(c.d)}</span></summary>${changeList(c)}</details>`).join('')}</div>`;
+  h+=CHANGES.length===1?`<div class="panel"><h3>${esc(CHANGES[0].title)}</h3><div class="tiny muted">v${esc(CHANGES[0].v)} · ${esc(CHANGES[0].d)}</div>${changeList(CHANGES[0])}</div>`:`<div class="panel"><h3>Changelog</h3>${CHANGES.map((c,i)=>i===0?`<h4 style="margin:6px 0 2px">v${esc(c.v)} · ${esc(c.title)}</h4><div class="tiny muted">${esc(c.d)}</div>${changeList(c)}`:`<details class="chgold"><summary><b>v${esc(c.v)}</b> · ${esc(c.title)} <span class="tiny muted">${esc(c.d)}</span></summary>${changeList(c)}</details>`).join('')}</div>`;
   h+=creditsPanel();
-  h+=`<div class="panel"><h3>Privacy</h3><p class="small">Your save lives only in this browser, on this device. The game sends nothing anywhere: no accounts, no tracking, no analytics. Clearing your browser's site data deletes the save, so export a copy from Settings now and then.</p></div>`;
+  h+=`<div class="panel"><h3>Privacy</h3><p class="small">Your save lives only in this browser, on this device. ${APPINFO.goatcounter&&APPINFO.channel==='public'?'The site counts anonymous visits and progress milestones (like "beat Mossy Path") with GoatCounter, so we know how far players get. No cookies, no accounts, no personal data, no ads. Your save itself is never sent anywhere.':'The game sends nothing anywhere: no accounts, no tracking, no analytics.'} Clearing your browser's site data deletes the save, so export a copy from Settings now and then.</p></div>`;
   h+=`<p class="tiny muted" style="text-align:center;margin:14px 8px">© ${esc(APPINFO.year)} ${esc(APPINFO.owner)}. The game's code is open source under the MIT License. Art, sound and fonts belong to their creators and are used under their own licenses (see Credits); the MIT License does not cover them.<br>A parody of gacha and trading-card games; not affiliated with any of them.${APPINFO.repo?`<br><a href="${esc(APPINFO.repo)}" target="_blank" rel="noopener">${esc(APPINFO.repo.replace('https://',''))}</a>`:''}</p>`;
   return h}
 function aboutAct(arg){
@@ -3366,6 +3386,100 @@ function releaseBoot(){const S=G.S;
   if(G.has('hero')&&S.seenVer!==APPINFO.ver&&S.t>60)queue(()=>showWhatsNew(false));else S.seenVer=APPINFO.ver;
   backupNow('Start of session');setInterval(()=>backupNow('Every 30 minutes'),60*1000);
   const rr=G.reroll;G.reroll=function(){backupNow('Before Reroll',true);return rr.apply(this,arguments)};
-  window.__bootOk=1}
+  trackBoot();window.__bootOk=1}
+
+/* ---------- analytics: anonymous page loads + progress milestones (GoatCounter) ---------- */
+// Each milestone is sent once per browser, so event counts read as "players who got this far".
+const TRACK_KEY='drop-chance-tracked';
+function trackOnce(name,title){if(!APPINFO.goatcounter||APPINFO.channel!=='public')return;let done={};try{done=JSON.parse(localStorage.getItem(TRACK_KEY)||'{}')}catch(e){}
+  if(done[name])return;done[name]=1;try{localStorage.setItem(TRACK_KEY,JSON.stringify(done))}catch(e){}
+  let tries=0;const send=()=>{if(window.goatcounter&&window.goatcounter.count){try{window.goatcounter.count({path:'progress/'+name,title:title||name,event:true})}catch(e){}}else if(tries++<20)setTimeout(send,1500)};send()}
+const slug=t=>String(t).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+function trackBoot(){trackOnce('00-loaded-game','Loaded the game');
+  G.on(e=>{const S=G.S;
+    if(e.type==='zoneCleared'&&e.first&&!e.run.train){const Z=ZONE[e.run.zone];if(!Z||Z.tier)return;
+      if(e.run.zone==='1-1')trackOnce('01-beat-mossy-path','Beat Mossy Path');
+      trackOnce('zone-'+e.run.zone+'-'+slug(Z.n),'Beat zone '+e.run.zone+' '+Z.n);
+      const R=REGIONS.find(r=>r.id===Z.reg);if(R&&!R.wild&&R.main[R.main.length-1][0]===e.run.zone)trackOnce('region-'+(REGIONS.indexOf(R)+1)+'-'+slug(R.n),'Beat region '+R.n);
+      if(R&&R.wild)trackOnce('wilds-'+slug(R.n),'Cleared a Wilds zone in '+R.n)}
+    if(e.type==='reroll'){const n=S.meta.rerolls;if([1,3,5,10,20].includes(n))trackOnce('reroll-'+n,'Reroll #'+n)}
+    if(e.type==='mythic')trackOnce('mythic','Hit the 0.001% row')});
+  const iv=setInterval(()=>{if(G.has('hero')){trackOnce('02-built-the-game','Finished building the game (Pip arrives)');clearInterval(iv)}},3000)}
+
+/* =========================================================
+   First-run tutorial: floating boxes that spotlight one part
+   of the screen at a time, with Next and Skip all.
+   Plus two one-off tips: the B-team (training) and gems.
+   ========================================================= */
+const TUT=[
+  {id:'scene',screen:'adventure',sel:'#scene',txt:'This is the adventure screen. It\'s just for show.',next:'Next'},
+  {id:'party',screen:'adventure',sel:'#pstrip',txt:'These are your active heroes. For now you just have good old C-Rank Pip.',next:'Next'},
+  {id:'stages',screen:'adventure',sel:'#map',txt:'This is the stage select. More stages open up as you progress.',next:'Next'},
+  {id:'rewards',sel:'#nav [data-arg="machines"]',arrow:1,txt:'Pip has been earning loot. Tap Rewards to see it.',until:()=>UI.screen==='machines'},
+  {id:'coins',screen:'machines',sel:'.machine .ctrls',txt:'Defeating enemies gives you rewards: XP packs and coin packs. For now, open all your coin packs.',
+    prep:()=>{if(UI.machine!=='coin'){UI.machine='coin';dirty()}},until:()=>G.S.tut.coin&&G.spinsFor('coin')<=2},
+  {id:'summon',sel:'#nav [data-arg="summon"]',arrow:1,txt:'Now tap Summon.',until:()=>UI.screen==='summon'},
+  {id:'gacha',screen:'summon',sel:'[data-act="pullCore"]',prep:()=>{if(UI.summonTab!=='core'){UI.summonTab='core';dirty()}},
+    txt:()=>'This tutorial gacha is going to make you slowly unlock game features one at a time. Sorry.'+(G.S.coins<G.coreCost()?` (This pull costs ${fmt(G.coreCost())} coins: open more coin packs first.)`:''),until:()=>G.has('xpM')},
+  {id:'xp',sel:()=>UI.screen!=='machines'?'#nav [data-arg="machines"]':UI.machine!=='xp'?'[data-act="machine"][data-arg="xp"]':'.machine .ctrls',arrow:()=>UI.screen!=='machines',
+    txt:()=>UI.screen!=='machines'?'Go back to Rewards and open your XP rewards now.':UI.machine!=='xp'?'Open the XP tab.':'Open your XP rewards now. XP packs level up your heroes.',until:()=>G.S.tut.xp},
+  {id:'done',txt:'Congrats! You can get the rest from here. Keep summoning game features, powering up, unlocking new heroes, and chasing that 0.001% drop!',next:'Let\'s go'},
+];
+const TUT_SUMMON=TUT.findIndex(s=>s.id==='summon');
+const tv=(v)=>typeof v==='function'?v():v;
+function tutOn(){const S=G.S;if(!S.tut)S.tut=G.has('xpM')?{i:0,done:1}:{i:0,done:0};return !S.tut.done&&G.has('hero')}
+function tutSummonLocked(){return tutOn()&&G.S.tut.i<TUT_SUMMON}
+// Called by act() before every action. Returning false cancels the action.
+function tutAct(a,arg){if(!tutOn())return true;const S=G.S;
+  if(tutSummonLocked()&&((a==='go'&&arg==='summon')||a==='summonGo')){toast('Check your Rewards first',A('o/MoneyBag'),'tut');return false}
+  if(a==='open'&&UI.screen==='machines'){if(UI.machine==='coin')S.tut.coin=1;if(UI.machine==='xp')S.tut.xp=1}
+  return true}
+function tutEl(){let e=document.getElementById('tut');if(!e){e=document.createElement('div');e.id='tut';e.innerHTML='<div class="tring"></div><div class="tarrow">▼</div><div class="tcard" role="dialog" aria-live="polite"><div class="tstep"></div><p class="ttxt"></p><div class="tbtns"><button class="btn xs ghost" data-tut="skip">Skip all</button><button class="btn sm pink" data-tut="next"></button></div></div>';document.body.appendChild(e);
+  e.addEventListener('click',ev=>{const b=ev.target.closest('[data-tut]');if(!b)return;ev.stopPropagation();const S=G.S;
+    if(b.dataset.tut==='skip'){S.tut.done=1;trackOnce('tutorial-skipped','Skipped the tutorial at step '+(S.tut.i+1))}
+    else{S.tut.i++;if(S.tut.i>=TUT.length){S.tut.done=1;trackOnce('tutorial-finished','Finished the tutorial')}}
+    UI.tutSeen=-1;tutTick();save()})}
+  return e}
+function tutTick(){const e=tutEl();const S=G.S;
+  const hide=()=>{e.hidden=true};
+  if(!tutOn()||overlayOpen()||UI.sheet||UI.catching)return hide();
+  let st=TUT[S.tut.i];
+  // auto-advance steps that wait for something the player does
+  while(st&&st.until&&st.until()){S.tut.i++;st=TUT[S.tut.i];UI.tutSeen=-1}
+  if(!st){S.tut.done=1;return hide()}
+  if(st.screen&&UI.screen!==st.screen)return hide();
+  if(UI.tutSeen!==S.tut.i){UI.tutSeen=S.tut.i;if(st.prep)st.prep();UI.tutScrolled=false}
+  const sel=tv(st.sel);const t=sel?document.querySelector(sel):null;
+  if(sel&&!t)return hide();
+  e.hidden=false;
+  const card=e.querySelector('.tcard'),ring=e.querySelector('.tring'),arr=e.querySelector('.tarrow');
+  e.querySelector('.tstep').textContent=`Tutorial · ${S.tut.i+1} of ${TUT.length}`;
+  const txt=tv(st.txt);const tt=e.querySelector('.ttxt');if(tt.textContent!==txt)tt.textContent=txt;
+  const nb=e.querySelector('[data-tut="next"]');nb.hidden=!st.next;nb.textContent=st.next||'';
+  e.querySelector('[data-tut="skip"]').hidden=st.id==='done';
+  if(!t){ring.hidden=true;arr.hidden=true;card.style.left='50%';card.style.top='50%';card.style.transform='translate(-50%,-50%)';e.classList.add('dim');return}
+  e.classList.remove('dim');
+  if(!UI.tutScrolled&&!t.closest('#nav')){UI.tutScrolled=true;const r0=t.getBoundingClientRect();if(r0.top<70||r0.bottom>innerHeight-200)t.scrollIntoView({block:'center',behavior:'smooth'})}
+  const r=t.getBoundingClientRect(),pad=6;
+  ring.hidden=false;Object.assign(ring.style,{left:(r.left-pad)+'px',top:(r.top-pad)+'px',width:(r.width+pad*2)+'px',height:(r.height+pad*2)+'px'});
+  const showArr=!!tv(st.arrow);arr.hidden=!showArr;if(showArr){arr.style.left=(r.left+r.width/2)+'px';arr.style.top=(r.top-pad-30)+'px'}
+  card.style.transform='none';const cw=Math.min(340,innerWidth-24);card.style.width=cw+'px';const ch=card.offsetHeight;
+  const below=r.bottom+pad+12, above=r.top-pad-12-ch-(showArr?30:0);const navTop=($('nav')&&!$('nav').hidden)?$('nav').getBoundingClientRect().top:innerHeight;
+  const top=below+ch<navTop-8?below:Math.max(8,above);
+  card.style.top=top+'px';card.style.left=Math.max(12,Math.min(innerWidth-cw-12,r.left+r.width/2-cw/2))+'px'}
+
+/* ---------- one-off tips ---------- */
+Object.assign(INTRO,{
+  bteam:{n:'Your B-team',ico:'k/Punch',txt:'You can have your B-team heroes who aren\'t in your main party train on earlier stages, so they level up too. Set them up in the Training Grounds on the Adventure screen.'},
+  gemtips:{n:'Gems',ico:'i/Diamond',txt:'Last tutorial message for a while, I promise. Gems add power to your gear. Pull them from the Gem banner with gem tickets, which come from loot packs, chests, boss loot and Gem Hunt expeditions. In the Bag, open a piece of gear and socket a gem into it: one gem per item. Rubies add attack, Emeralds max HP, Topaz crit chance, and Amethysts armor and magic resist. Fuse three of the same gem into one of the next grade, and polish a gem type to make every gem of that type stronger.'},
+});
+function checkTips(){const S=G.S;if(!G.has('hero')||UI.catching||tutOn())return;S.intros=S.intros||{};
+  if(!S.intros.bteam&&G.has('training')&&Object.keys(S.heroes).length>3)queue(()=>showIntro('bteam'));
+  if(!S.intros.gemtips&&G.has('gems'))queue(()=>showIntro('gemtips'))}
+function tutBoot(){const S=G.S;
+  // Players who were already past the opening when the tutorial shipped don't get it.
+  if(!S.tut)S.tut=G.has('xpM')?{i:0,done:1}:{i:0,done:0};
+  setInterval(tutTick,200);setInterval(checkTips,1000);
+  window.addEventListener('resize',tutTick);window.addEventListener('scroll',tutTick,{passive:true})}
 
 </script></body></html>

@@ -12,6 +12,8 @@ A free idle game about drop rates. **Everything is a drop:** your heroes, your g
 
 This is an early public build. Balance will change, and things will break.
 
+**Privacy:** the site counts anonymous page loads and progress milestones with [GoatCounter](https://www.goatcounter.com) (no cookies, no personal data). Your save never leaves your device.
+
 - **Found a bug?** In the game, go to More → About → Report a bug. It copies a report with your version and any errors. Paste it into a [new issue](https://github.com/gdjustin/drop-chance/issues/new/choose) or the [Discord](https://discord.gg/VABkGWuMy).
 - **What changed:** see [CHANGELOG.md](CHANGELOG.md), or More → About in the game.
 
