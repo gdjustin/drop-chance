@@ -2786,7 +2786,7 @@ function renderMachines(){const S=G.S;const k=UI.machine;const mach=MACH;
   h+=`<div class="packart"><div class="pk"><img class="px" src="${A(m.ic)}" alt=""></div><div class="pkn" id="pkn">${fmt(n)}</div></div>
     <div class="ctrls"><button class="btn" data-act="open" data-arg="1" data-need="1" ${n?'':'disabled'}>Open 1</button><button class="btn blue" data-act="open" data-arg="10" data-need="1" ${n?'':'disabled'}>Open 10</button>${G.has('batch')?`<button class="btn pink" data-act="open" data-arg="all" data-need="1" ${n||(k==='xp'&&G.spinsFor('xp'))?'':'disabled'}>Open all${k==='xp'?' heroes':''}</button>`:''}
     ${G.has('autospin')?`<button class="btn ${S.auto.spin?'green':'ghost'}" data-act="toggleAuto" data-arg="spin">Auto ${S.auto.spin?'on':'off'}</button>`:''}</div>
-    ${k==='coin'||k==='xp'?(G.has('odds')?`<div class="paytable">${REEL.map(r=>`<span>×${r.m} ${(r.p*100).toFixed(1)}%</span>`).join('')}</div><p class="tiny" style="opacity:.8;text-align:center;margin:0">On average, a pack pays exactly its flat reward.</p>`:''):rowChips(k,TABLES[k].rows)}
+    ${k==='coin'||k==='xp'?(G.has('odds')?`<div class="paytable">${REEL.map(r=>`<span>×${r.m} ${(r.p*100).toFixed(1)}%</span>`).join('')}</div>`:''):rowChips(k,TABLES[k].rows)}
     ${(k==='coin'||k==='xp')&&!G.has('autospin')?`<p class="small" style="text-align:center;margin:8px 0 0;opacity:.95">Don't worry, you'll unlock the ability to auto-open these soon.</p>`:''}
   </div>`;
   return h}
